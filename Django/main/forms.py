@@ -1,0 +1,44 @@
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.template.defaultfilters import title
+
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+
+class PredictionForm(forms.Form):
+    LOAD_CHOICES = [
+        ('Light_Load', 'Легкая загрузка'),
+        ('Medium_Load', 'Средняя загрузка'),
+        ('Maximum_Load', 'Максимальная загрузка'),
+    ]
+    WEEK_STATUS_CHOICES = [
+        ('Weekday', 'Будний день'),
+        ('Weekend', 'Выходной'),
+    ]
+    DAY_CHOICES = [
+        ('Monday', 'Понедельник'), ('Tuesday', 'Вторник'), ('Wednesday', 'Среда'),
+        ('Thursday', 'Четверг'), ('Friday', 'Пятница'), ('Saturday', 'Суббота'), ('Sunday', 'Воскресенье')
+    ]
+
+    # Поля на основе numb_features и cat_features
+    Leading_Power_Factor = forms.FloatField(min_value=0, max_value=100)
+    Lagging_Power_Factor = forms.FloatField(min_value=0, max_value=100)
+    leading_reactive = forms.FloatField()
+
+    time = forms.TimeField(
+        label="Время (для расчета NSM)",
+        widget=forms.TimeInput(attrs={'type': 'time'}),
+        help_text="Мы сами переведем это в секунды (NSM)"
+    )
+
+    day_num = forms.IntegerField(label="День недели (От 0 - 6)", min_value=0, max_value=6)
+    week_status = forms.ChoiceField(choices=WEEK_STATUS_CHOICES)
+    day_of_week = forms.ChoiceField(choices=DAY_CHOICES)
+    load_type = forms.ChoiceField(choices=LOAD_CHOICES )

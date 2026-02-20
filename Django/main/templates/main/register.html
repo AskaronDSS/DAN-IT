@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Регистрация</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main/style.css' %}">
+
+</head>
+<body>
+    <div class="auth-container">
+    <div class="content-box auth-box">
+        <h1>Регистрация</h1>
+        <form method="post" class="industrial-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="cta-button">Создать аккаунт</button>
+        </form>
+        <p class="auth-footer">Уже есть профиль? <a href="{% url 'login' %}">Войти</a></p>
+    </div>
+</div>
+</body>
+</html>

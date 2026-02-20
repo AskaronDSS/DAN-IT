@@ -1,0 +1,67 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Прогноз потребления{% endblock %}
+
+{% block content %}
+<main>
+    <div class="content-box">
+        <h1>Прогноз Энергопотребления</h1>
+        <p>Введите технические параметры объекта для получения расчетного значения потребления (кВт⋅ч).</p>
+
+        <form method="post" class="industrial-form">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>Leading Power Factor (Ведущий коэффициент)</label>
+                    {{ form.Leading_Power_Factor }}
+                </div>
+                <div class="form-group">
+                    <label>Lagging Power Factor (Запаздывающий коэффициент)</label>
+                    {{ form.Lagging_Power_Factor }}
+                </div>
+                <div class="form-group">
+                    <label>Leading Reactive Power (Нагрузка сети)</label>
+                    {{ form.leading_reactive }}
+                </div>
+                <div class="form-group">
+                    <label>Интересующее время дня</label>
+                    {{ form.time }}
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>День недели (От 0 - 6)</label>
+                    {{ form.day_num }}
+                </div>
+                <div class="form-group">
+                    <label>Статус недели</label>
+                    {{ form.week_status }}
+                </div>
+                <div class="form-group">
+                    <label>Тип загрузки</label>
+                    {{ form.load_type }}
+                </div>
+            </div>
+
+            <div style="display:none;">{{ form.day_of_week }}</div>
+
+            <button type="submit" class="cta-button" style="margin-top: 20px; border: none; cursor: pointer;">
+                Запустить расчет
+            </button>
+        </form>
+
+        {% if result %}
+        <div class="content-box" style="margin-top: 40px; border-left: 8px solid #27ae60; background: rgba(20, 40, 20, 0.8);">
+            <h2 style="color: #27ae60; font-family: 'Impact', sans-serif;">РЕЗУЛЬТАТ АНАЛИЗА:</h2>
+            <div style="font-size: 2.5rem; color: #fff; font-weight: bold;">
+                {{ result }} <span style="font-size: 1rem; color: #ffcc00;">kWh</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block title %}Главная страница{% endblock %}
+{% load static %}
+
+
+{% block content %}
+    <h1>Добро пожаловать на главную страницу!</h1>
+    <img src="{% static 'main/images/home.jpg' %}" alt="Погода" class="home-image">
+    <p>Здесь вы можете найти информацию о нашем сайте и его функциях.</p>
+{% endblock %}
