@@ -1,53 +1,53 @@
 {% extends 'main/base.html' %}
-{% block title %} История поисков{% endblock %}
-
+{% block title %} История прогнозов {% endblock %}
 
 {% block content %}
-    <main>
+<main>
     <div class="content-box">
         <h1>ИСТОРИЯ ПРОГНОЗОВ</h1>
         <p>Ниже представлены ваши предыдущие расчеты энергопотребления.</p>
 
-        <div style="overflow-x: auto; margin-top: 20px;">
-            <table style="width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.3); color: #f0f0f0;">
+        <div style="overflow-x: auto; margin: 20px 0;">
+            <table style="width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.3); color: #f0f0f0; border-radius: 10px; overflow: hidden;">
                 <thead>
-                    <tr style="border-bottom: 2px solid #ffcc00; text-align: left;">
-                        <th style="padding: 15px; color: #ffcc00;">ДАТА</th>
-                        <th style="padding: 15px; color: #ffcc00;">LEADING PF</th>
-                        <th style="padding: 15px; color: #ffcc00;">LAGGING PF</th>
-                        <th style="padding: 15px; color: #ffcc00;">ЗАГРУЗКА</th>
+                    <tr style="border-bottom: 2px solid #ffcc00; text-align: left; background: rgba(255, 204, 0, 0.05);">
+                        <th style="padding: 15px; color: #ffcc00;">ДАТА ПРОГНОЗА</th>
+                        <th style="padding: 15px; color: #ffcc00;">ДЕНЬ НЕДЕЛИ</th>
+                        <th style="padding: 15px; color: #ffcc00;">ВРЕМЯ</th>
+                        <th style="padding: 15px; color: #ffcc00;">ТИП НАГРУЗКИ</th>
                         <th style="padding: 15px; color: #ffcc00;">РЕЗУЛЬТАТ</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for h in history %}
-                    <tr style="border-bottom: 1px solid #444; transition: 0.3s;" onmouseover="this.style.background='rgba(255,204,0,0.1)'" onmouseout="this.style.background='transparent'">
-                        <td style="padding: 15px;">{{ h.timestamp|date:"d.m.Y H:i" }}</td>
-                        <td style="padding: 15px;">{{ h.leading_pf }}</td>
-                        <td style="padding: 15px;">{{ h.lagging_pf }}</td>
-                        <td style="padding: 15px;">
-                            <span style="color: {% if h.load_type == 'Maximum_Load' %}#e74c3c{% else %}#ffcc00{% endif %};">
-                                {{ h.get_load_type_display|default:h.load_type }}
-                            </span>
+                    <tr style="border-bottom: 1px solid #444; transition: 0.3s;" onmouseover="this.style.background='rgba(255,204,0,0.05)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 15px;">{{ h.created_at|date:"d.m.Y" }}</td>
+                        <td style="padding: 15px; color: #ffcc00;">{{ h.get_day_name }}</td>
+                        <td style="padding: 15px;">{{ h.created_at|date:"H:i" }}</td>
+                        <td style="padding: 15px; font-style: italic;">{{ h.load_type }}</td>
+                        <td style="padding: 15px; font-weight: bold; color: #fff; background: rgba(255,204,0,0.1);">
+                            {{ h.result_predict }} kWh
                         </td>
-                        <td style="padding: 15px; font-weight: bold; color: #fff;">{{ h.result_predict }} kWh</td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" style="padding: 30px; text-align: center; color: #888;">История пока пуста. Сделайте свой первый прогноз!</td>
+                        <td colspan="5" style="padding: 30px; text-align: center; color: #888;">История пока пуста.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-    <form action="{% url 'clear_history' %}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить всю историю?');">
-        {% csrf_token %}
-        <button type="submit" style="background: transparent; border: 1px solid #e74c3c; color: #e74c3c; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s;"
-                onmouseover="this.style.background='#e74c3c'; this.style.color='#fff';"
-                onmouseout="this.style.background='transparent'; this.style.color='#e74c3c';">
-            Очистить историю
-        </button>
-    </form>
-</div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+            <form action="{% url 'clear_history' %}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить всю историю?');">
+                {% csrf_token %}
+                <button type="submit" style="background: transparent; border: 1px solid #e74c3c; color: #e74c3c; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: 0.3s; font-weight: bold;"
+                        onmouseover="this.style.background='#e74c3c'; this.style.color='#fff';"
+                        onmouseout="this.style.background='transparent'; this.style.color='#e74c3c';">
+                    ОЧИСТИТЬ ИСТОРИЮ
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
 {% endblock %}

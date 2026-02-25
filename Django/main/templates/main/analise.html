@@ -4,6 +4,35 @@
 
 
 {% block content %}
-    <h1>Статистика</h1>
-    <p>Здесь будет отображаться статистика ваших поисков.</p>
+<section style="padding: 60px 20px; background: rgba(0,0,0,0.4); border-top: 1px solid #333;">
+    <h2 style="color: #ffcc00; text-align: center; margin-bottom: 50px; text-transform: uppercase;">Исследование данных (EDA)</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+
+        <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #444;">
+            <img src="/static/main/images/usageDay.png" style="width: 100%; border-radius: 5px; opacity: 0.9;">
+            <h4 style="color: #ffcc00; margin-top: 15px;">Динамика энергопотребления</h4>
+            <p style="color: #ccc; font-size: 0.9rem;">График показывает цикличный характер работы предприятия с выраженными пиками потребления до 140+ kWh в рабочие смены.</p>
+        </div>
+
+        <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #444;">
+            <img src="/static/main/images/cosFi.png" style="width: 100%; border-radius: 5px; opacity: 0.9;">
+            <h4 style="color: #ffcc00; margin-top: 15px;">Зависимость от Load Type</h4>
+            <p style="color: #ccc; font-size: 0.9rem;">Четкое разделение кластеров: Light Load (бирюзовый) сосредоточен у нуля, в то время как Maximum Load (фиолетовый) требует высокого коэффициента мощности.</p>
+        </div>
+
+        <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #444;">
+            <img src="/static/main/images/corr.png" style="width: 100%; border-radius: 5px; opacity: 0.9;">
+            <h4 style="color: #ffcc00; margin-top: 15px;">Корреляция факторов</h4>
+            <p style="color: #ccc; font-size: 0.9rem;">Сильнейшая связь (0.99) наблюдается между выбросами CO2 и потреблением энергии, что подтверждает экологическую значимость оптимизации.</p>
+        </div>
+
+        <div style="background: #111; padding: 20px; border-radius: 10px; border: 1px solid #444;">
+            <img src="/static/main/images/importance_feature.png" style="width: 100%; border-radius: 5px; opacity: 0.9;">
+            <h4 style="color: #ffcc00; margin-top: 15px;">Важность признаков</h4>
+            <p style="color: #ccc; font-size: 0.9rem;">Модель Random Forest определила 'Light Load' и 'Lagging Power Factor' как наиболее влиятельные параметры для прогноза.</p>
+        </div>
+
+    </div>
+</section>
 {% endblock %}

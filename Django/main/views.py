@@ -1,11 +1,14 @@
-from django.shortcuts import redirect, render
-from .forms import UserRegisterForm, PredictionForm
+from django.shortcuts import redirect
+from .forms import UserRegisterForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import logout
 import joblib
+
 import pandas as pd
+from django.shortcuts import render
+from .forms import PredictionForm
 from .models import PredictHistory
 
 my_model = joblib.load('my_model.joblib')
@@ -44,40 +47,39 @@ def predict_view(request):
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
-            date = form.cleaned_data
+            data = form.cleaned_data
 
-            nsm_value = (date['time'].hour * 3600) + (date['time'].minute * 60)
+            nsm_value = (data['time'].hour * 3600) + (data['time'].minute * 60)
 
             input_df = pd.DataFrame([{
-                # numb_features
-                'Leading_Current_Reactive_Power_kVarh': date['leading_reactive'],
-                'Lagging_Current_Power_Factor': date['Lagging_Power_Factor'],
-                'Leading_Current_Power_Factor': date['Leading_Power_Factor'],
+                'Leading_Current_Reactive_Power_kVarh': data['leading_reactive'],
+                'Lagging_Current_Power_Factor': data['Lagging_Power_Factor'],
+                'Leading_Current_Power_Factor': data['Leading_Power_Factor'],
                 'NSM': nsm_value,
-                'DayOfWeek': date['day_num'],
-
-                # cat_features
-                'WeekStatus': date['week_status'],
-                'Day_Of_Week': date['day_of_week'],
-                'Load_Type': date['load_type']
+                'DayOfWeek': data['day_num'],
+                'WeekStatus': data['week_status'],
+                'Day_Of_Week': data['day_of_week'],
+                'Load_Type': data['load_type']
             }])
-
             prediction = my_model.predict(input_df)
             result = round(prediction[0], 4)
+
 
             if request.user.is_authenticated:
                 PredictHistory.objects.create(
                     user=request.user,
-                    leading_pf=date['Leading_Power_Factor'],
-                    lagging_pf=date['Lagging_Power_Factor'],
-                    leading_reactive=date['leading_reactive'],
-                    load_type=date['load_type'],
+                    day_num=data['day_num'],
+                    leading_pf=data['Leading_Power_Factor'],
+                    lagging_pf=data['Lagging_Power_Factor'],
+                    leading_reactive=data['leading_reactive'],
+                    load_type=data['load_type'],
                     result_predict=result
                 )
-
     else:
         form = PredictionForm()
+
     return render(request, 'main/forecast.html', {'form': form, 'result': result})
+
 
 def home(request):
     return render(request, 'main/home.html')

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.template.defaultfilters import title
+
 
 
 class UserRegisterForm(UserCreationForm):
@@ -27,7 +27,6 @@ class PredictionForm(forms.Form):
         ('Thursday', 'Четверг'), ('Friday', 'Пятница'), ('Saturday', 'Суббота'), ('Sunday', 'Воскресенье')
     ]
 
-    # Поля на основе numb_features и cat_features
     Leading_Power_Factor = forms.FloatField(min_value=0, max_value=100)
     Lagging_Power_Factor = forms.FloatField(min_value=0, max_value=100)
     leading_reactive = forms.FloatField()
