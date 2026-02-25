@@ -26,7 +26,11 @@
                         <td style="padding: 15px;">{{ h.created_at|date:"H:i" }}</td>
                         <td style="padding: 15px; font-style: italic;">{{ h.load_type }}</td>
                         <td style="padding: 15px; font-weight: bold; color: #fff; background: rgba(255,204,0,0.1);">
-                            {{ h.result_predict }} kWh
+                            {{ h.result_predict }}
+                            <span style="color: #ffcc00; font-size: 0.85em; font-weight: normal; margin-left: 5px;">
+                                ±{{ h.variance }}
+                            </span>
+                            <span style="font-size: 0.9em; margin-left: 3px;">kWh</span>
                         </td>
                     </tr>
                     {% empty %}

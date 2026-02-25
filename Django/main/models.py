@@ -16,6 +16,8 @@ class PredictHistory(models.Model):
     load_type = models.CharField(max_length=100)
     result_predict = models.FloatField()
 
+    variance = models.FloatField(default=0)
+
     def get_day_name(self):
         days = ['Понедельник', 'Вторник', 'Среда', 'Четверг',
                 'Пятница', 'Суббота', 'Воскресенье']

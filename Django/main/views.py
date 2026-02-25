@@ -1,3 +1,5 @@
+from statistics import variance
+
 from django.shortcuts import redirect
 from .forms import UserRegisterForm
 from django.contrib.auth import login
@@ -44,13 +46,13 @@ def my_logout(request):
 
 def predict_view(request):
     result = None
+    variance = None
     if request.method == 'POST':
         form = PredictionForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
 
             nsm_value = (data['time'].hour * 3600) + (data['time'].minute * 60)
-
             input_df = pd.DataFrame([{
                 'Leading_Current_Reactive_Power_kVarh': data['leading_reactive'],
                 'Lagging_Current_Power_Factor': data['Lagging_Power_Factor'],
@@ -64,7 +66,7 @@ def predict_view(request):
             prediction = my_model.predict(input_df)
             result = round(prediction[0], 4)
 
-
+            variance = round(result * 0.05, 2)
             if request.user.is_authenticated:
                 PredictHistory.objects.create(
                     user=request.user,
@@ -73,12 +75,15 @@ def predict_view(request):
                     lagging_pf=data['Lagging_Power_Factor'],
                     leading_reactive=data['leading_reactive'],
                     load_type=data['load_type'],
-                    result_predict=result
+                    result_predict=result,
+                    variance = variance
                 )
     else:
         form = PredictionForm()
 
-    return render(request, 'main/forecast.html', {'form': form, 'result': result})
+    return render(request, 'main/forecast.html', {'form': form,
+                                                  'result': result,
+                                                  'variance': variance})
 
 
 def home(request):
