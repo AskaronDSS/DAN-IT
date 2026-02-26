@@ -16,6 +16,17 @@ from .models import PredictHistory
 my_model = joblib.load('my_model.joblib')
 
 def register(request):
+    """
+    Регистрирует нового пользователя в системе.
+
+    Создает запись в таблице пользователей Django на основе данных из UserRegisterForm.
+    После успешной регистрации автоматически авторизует пользователя.
+
+    Args:
+        request: Объект запроса Django.
+    Returns:
+        Рендер страницы регистрации или перенаправление на главную при успехе.
+    """
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -27,6 +38,17 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 def my_login(request):
+    """
+    Авторизует существующего пользователя.
+
+    Проверяет соответствие логина и пароля. При успешном совпадении создает
+    сессию пользователя. Перед входом принудительно завершает текущую сессию (logout).
+
+    Args:
+        request: Объект запроса Django.
+    Returns:
+        Рендер страницы входа или перенаправление на главную.
+    """
     my_logout(request)
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -39,12 +61,37 @@ def my_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'main/login.html', {'form': form})
+
+
 def my_logout(request):
+    """
+    Завершает текущую сессию пользователя.
+
+    Args:
+        request: Объект запроса Django.
+    Returns:
+        Перенаправление на страницу логина.
+    """
     logout(request)
     return redirect('login')
 
 
 def predict_view(request):
+    """
+        Обрабатывает ввод технических параметров и возвращает прогноз энергопотребления.
+
+        Функция выполняет следующие действия:
+        1. Получает данные из PredictionForm (коэффициенты мощности, нагрузку, время).
+        2. Рассчитывает NSM (количество секунд с начала дня).
+        3. Формирует DataFrame для подачи в модель ML.
+        4. Рассчитывает прогноз и дисперсию (погрешность 5%).
+        5. Сохраняет результат в базу данных (PredictHistory), если пользователь авторизован.
+
+        Args:
+            request: Объект запроса Django.
+        Returns:
+            Рендер страницы прогноза с результатом и формой.
+        """
     result = None
     variance = None
     if request.method == 'POST':
@@ -87,17 +134,42 @@ def predict_view(request):
 
 
 def home(request):
+    """Отображает главную страницу сайта."""
     return render(request, 'main/home.html')
+
 def forecast(request):
+    """Отображает страницу с формой для прогноза энергопотребления."""
     return render(request, 'main/forecast.html')
+
 def history(request):
+    """
+    Отображает историю прогнозов, сделанных текущим пользователем.
+
+    Извлекает все записи из PredictHistory, связанные с авторизованным пользователем.
+
+    Args:
+        request: Объект запроса Django.
+    Returns:
+        Рендер страницы истории с набором данных (QuerySet).
+    """
     my_history = PredictHistory.objects.filter(user=request.user)
     return render(request, 'main/history.html',{'history': my_history})
 
 def clear_history(request):
+    """
+    Удаляет все записи из истории прогнозов текущего пользователя.
+
+    Выполняется только при POST-запросе для защиты от случайного удаления через URL.
+
+    Args:
+        request: Объект запроса Django.
+    Returns:
+        Перенаправление на пустую страницу истории.
+    """
     if request.method == 'POST':
-        my_history = PredictHistory.objects.filter(user=request.user).delete()
+        PredictHistory.objects.filter(user=request.user).delete()
     return redirect('history')
 
 def statistics(request):
+    """Отображает страницу с аналитическими данными и статистикой."""
     return render(request, 'main/analise.html')
