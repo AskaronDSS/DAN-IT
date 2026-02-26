@@ -1,5 +1,3 @@
-from statistics import variance
-
 from django.shortcuts import redirect
 from .forms import UserRegisterForm
 from django.contrib.auth import login
@@ -7,7 +5,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import logout
 import joblib
-
 import pandas as pd
 from django.shortcuts import render
 from .forms import PredictionForm
