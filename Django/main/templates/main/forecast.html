@@ -34,8 +34,8 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                 <div class="form-group">
-                    <label>День недели (От 0 - 6)</label>
-                    {{ form.day_num }}
+                    <label>День недели</label>
+                    {{ form.day_of_week }}
                 </div>
                 <div class="form-group">
                     <label>Статус недели</label>
@@ -47,7 +47,6 @@
                 </div>
             </div>
 
-            <div style="display:none;">{{ form.day_of_week }}</div>
 
             <button type="submit" class="cta-button" style="margin-top: 20px; border: none; cursor: pointer;">
                 Запустить расчет

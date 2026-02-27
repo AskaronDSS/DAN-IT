@@ -96,13 +96,24 @@ def predict_view(request):
         if form.is_valid():
             data = form.cleaned_data
 
+            days = {
+                0: 'Понедельник',
+                1: 'Вторник',
+                2: 'Среда',
+                3: 'Четверг',
+                4: 'Пятница',
+                5: 'Суббота',
+                6: 'Воскресенье',
+
+            }
+
             nsm_value = (data['time'].hour * 3600) + (data['time'].minute * 60)
             input_df = pd.DataFrame([{
                 'Leading_Current_Reactive_Power_kVarh': data['leading_reactive'],
                 'Lagging_Current_Power_Factor': data['Lagging_Power_Factor'],
                 'Leading_Current_Power_Factor': data['Leading_Power_Factor'],
                 'NSM': nsm_value,
-                'DayOfWeek': data['day_num'],
+                'DayOfWeek': int(data['day_of_week']),
                 'WeekStatus': data['week_status'],
                 'Day_Of_Week': data['day_of_week'],
                 'Load_Type': data['load_type']
@@ -114,7 +125,7 @@ def predict_view(request):
             if request.user.is_authenticated:
                 PredictHistory.objects.create(
                     user=request.user,
-                    day_num=data['day_num'],
+                    day_num=int(data['day_of_week']),
                     leading_pf=data['Leading_Power_Factor'],
                     lagging_pf=data['Lagging_Power_Factor'],
                     leading_reactive=data['leading_reactive'],
@@ -149,7 +160,7 @@ def history(request):
     Returns:
         Рендер страницы истории с набором данных (QuerySet).
     """
-    my_history = PredictHistory.objects.filter(user=request.user)
+    my_history = PredictHistory.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'main/history.html',{'history': my_history})
 
 def clear_history(request):

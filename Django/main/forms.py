@@ -23,8 +23,13 @@ class PredictionForm(forms.Form):
         ('Weekend', 'Выходной'),
     ]
     DAY_CHOICES = [
-        ('Monday', 'Понедельник'), ('Tuesday', 'Вторник'), ('Wednesday', 'Среда'),
-        ('Thursday', 'Четверг'), ('Friday', 'Пятница'), ('Saturday', 'Суббота'), ('Sunday', 'Воскресенье')
+        (0, 'Понедельник'),
+        (1, 'Вторник'),
+        (2, 'Среда'),
+        (3, 'Четверг'),
+        (4, 'Пятница'),
+        (5, 'Суббота'),
+        (6, 'Воскресенье')
     ]
 
     Leading_Power_Factor = forms.FloatField(min_value=0, max_value=100)
@@ -37,7 +42,6 @@ class PredictionForm(forms.Form):
         help_text="Мы сами переведем это в секунды (NSM)"
     )
 
-    day_num = forms.IntegerField(label="День недели (От 0 - 6)", min_value=0, max_value=6)
     week_status = forms.ChoiceField(choices=WEEK_STATUS_CHOICES)
     day_of_week = forms.ChoiceField(choices=DAY_CHOICES)
     load_type = forms.ChoiceField(choices=LOAD_CHOICES )
