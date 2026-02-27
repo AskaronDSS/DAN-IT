@@ -48,7 +48,7 @@ def my_login(request):
     """
     my_logout(request)
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             user = form.get_user() 
             login(request, user)
@@ -95,17 +95,6 @@ def predict_view(request):
         form = PredictionForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-
-            days = {
-                0: 'Понедельник',
-                1: 'Вторник',
-                2: 'Среда',
-                3: 'Четверг',
-                4: 'Пятница',
-                5: 'Суббота',
-                6: 'Воскресенье',
-
-            }
 
             nsm_value = (data['time'].hour * 3600) + (data['time'].minute * 60)
             input_df = pd.DataFrame([{

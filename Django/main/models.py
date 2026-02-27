@@ -11,11 +11,8 @@ class PredictHistory(models.Model):
     leading_reactive = models.FloatField()
 
     day_num = models.IntegerField(default=0)
-    forecast_datetime = models.DateTimeField(auto_now_add=True)
-
     load_type = models.CharField(max_length=100)
     result_predict = models.FloatField()
-
     variance = models.FloatField(default=0)
 
     def get_day_name(self):
